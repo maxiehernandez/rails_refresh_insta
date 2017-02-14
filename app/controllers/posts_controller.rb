@@ -4,12 +4,13 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.all
+    render json: Post.includes(:comments).all
   end
 
   # GET /posts/1
   # GET /posts/1.json
   def show
+    render json: @post
   end
 
   # POST /posts
@@ -18,7 +19,7 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
 
     if @post.save
-      render :show, status: :created, location: @post
+      render json: @post
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -28,9 +29,9 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1.json
   def update
     if @post.update(post_params)
-      render :show, status: :ok, location: @post
+      render json: @post, status: 200
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: @post.errors, status: 500
     end
   end
 
@@ -48,6 +49,18 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:caption, :original_file_name, :file_name, :file_content_type, :file_updated_at, :user_id)
+      new_hash={}
+      if params[:data]&&params[:data][:attributes]
+        post_data=params[:data][:attributes]
+      else
+        post_data=params[:post]
+      end
+
+      post_data.each do |key,value|
+        new_hash[key.gsub("-","_")]=value
+      end
+
+      new_params=ActionController::Parameters.new(new_hash)
+      new_params.permit(:image_url, :file_name, :caption)
     end
 end
