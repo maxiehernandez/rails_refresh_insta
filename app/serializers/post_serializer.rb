@@ -1,5 +1,5 @@
 class PostSerializer < ActiveModel::Serializer
-  attributes(User.attribute_names.map(&:to_sym))
+  attributes(Post.attribute_names.map(&:to_sym))
   belongs_to :user, :key=>"user"
-  belongs_to :comment, :key=>"comment"
+  has_many :comments, :key=>"comments"
 end

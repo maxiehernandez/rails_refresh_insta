@@ -1,43 +1,40 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
 
-  # GET /posts
-  # GET /posts.json
   def index
     render json: Post.includes(:comments).all
   end
 
-  # GET /posts/1
-  # GET /posts/1.json
   def show
     render json: @post
   end
 
-  # POST /posts
-  # POST /posts.json
   def create
-    @post = Post.new(post_params)
+    @user = User.find(params[:user_id])
+    @post = @user.posts.build(post_params)
 
-    if @post.save
+
+    # @post = Post.new(post_params)
+
+    if @post.save!
       render json: @post
     else
       render json: @post.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /posts/1
-  # PATCH/PUT /posts/1.json
   def update
-    if @post.update(post_params)
+    if @post.update!(post_params)
       render json: @post, status: 200
     else
       render json: @post.errors, status: 500
     end
   end
 
-  # DELETE /posts/1
-  # DELETE /posts/1.json
   def destroy
+    @user = User.find(params[:user_id])
+    @post = @user.posts.find(params[:user_id])
+
     @post.destroy
   end
 
@@ -61,6 +58,6 @@ class PostsController < ApplicationController
       end
 
       new_params=ActionController::Parameters.new(new_hash)
-      new_params.permit(:image_url, :file_name, :caption)
+      new_params.permit(:caption, :image_url, :original_file_name, :file_name, :file_content_type, :file_updated_at, :user_id)
     end
 end
