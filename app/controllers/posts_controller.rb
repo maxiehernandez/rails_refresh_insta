@@ -10,16 +10,13 @@ class PostsController < ApplicationController
   end
 
   def create
-    @user = User.find(params[:user_id])
+    @user = User.find(params[:data][:relationships][:user][:data][:id])
     @post = @user.posts.build(post_params)
-
-
-    # @post = Post.new(post_params)
 
     if @post.save!
       render json: @post
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: @post.errors, status: 500
     end
   end
 
@@ -32,9 +29,7 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    @user = User.find(params[:user_id])
-    @post = @user.posts.find(params[:user_id])
-
+    @post = Post.find(params[:id])
     @post.destroy
   end
 
