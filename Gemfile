@@ -12,6 +12,7 @@ gem 'hirb', '~> 0.7.3'
 gem 'active_model_serializers','~>0.10.0.rc5'
 gem 'json'
 gem 'rack-cors'
+gem 'chewy'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.18'
 # Use Puma as the app server
