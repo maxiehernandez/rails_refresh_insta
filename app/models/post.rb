@@ -5,4 +5,7 @@ class Post < ApplicationRecord
   # elasticsearch indexes
  update_index('store#post') { self } # specifying index, type and back-reference
  # for updating after user save or destroy associations
+ alias_attribute :title, :file_name
+ alias_attribute :description, :caption
+
 end
