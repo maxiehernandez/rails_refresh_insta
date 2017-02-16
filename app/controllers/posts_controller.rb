@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
 
   def index
-    render json: Post.includes(:comment).all
+    render json: Post.includes(:comments).all
   end
 
   def show
