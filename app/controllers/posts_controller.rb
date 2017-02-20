@@ -10,9 +10,12 @@ class PostsController < ApplicationController
   end
 
   def create
+    data = JSON.parse(params[:data])
+    file = params[:files][0]
     @user = User.find(params[:data][:relationships][:user][:data][:id])
     @post = @user.posts.build(post_params)
 
+    @post.original_filename = file
     if @post.save!
       render json: @post
     else
