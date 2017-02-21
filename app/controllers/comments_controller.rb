@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
   end
 
   def show
+    render json: @comments
   end
 
   def create
@@ -36,6 +37,18 @@ class CommentsController < ApplicationController
     end
 
     def comment_params
-      params.require(:comment).permit(:body, :post_id, :user_id)
+      new_hash={}
+      if params[:data]&&params[:data][:attributes]
+        post_data=params[:data][:attributes]
+      else
+        post_data=params[:post]
+      end
+
+      post_data.each do |key,value|
+        new_hash[key.gsub("-","_")]=value
+      end
+
+      new_params=ActionController::Parameters.new(new_hash)
+      new_params.permit(:body, :post_id, :user_id)
     end
 end

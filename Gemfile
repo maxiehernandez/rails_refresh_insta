@@ -13,6 +13,7 @@ gem 'active_model_serializers','~>0.10.0.rc5'
 gem 'json'
 gem 'rack-cors'
 gem 'chewy'
+gem 'aws-sdk', '~> 2'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.18'
 # Use Puma as the app server

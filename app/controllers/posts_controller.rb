@@ -49,7 +49,6 @@ class PostsController < ApplicationController
 
   def destroy
     @post.destroy!
-    render json: { data: [] }
   end
 
   private
