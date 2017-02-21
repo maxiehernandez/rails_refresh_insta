@@ -9,18 +9,34 @@ class PostsController < ApplicationController
     render json: @post
   end
 
-  def create
-    data = JSON.parse(params[:data])
-    file = params[:files][0]
-    @user = User.find(params[:data][:relationships][:user][:data][:id])
-    @post = @user.posts.build(post_params)
 
-    @post.original_filename = file
-    if @post.save!
-      render json: @post
+  def create
+    path = nil
+    original_filename = nil
+    content_type = nil
+    if params["files"]
+      data = JSON.parse(params[:data])["attributes"]
+      file = params[:files][0]
+      path = Post.uploading(file)
+      original_filename = file.original_filename
+      content_type = file.content_type
     else
-      render json: @post.errors, status: 500
+      data = params[:data][:attributes]
     end
+
+    user = User.find(1)#params[:data][:relationships][:user][:data][:id])
+
+    new_post = Post.new(
+      caption:            data["caption"],
+      file_name:          data["file-name"],
+      image_url:          data["image-url"],
+      original_file_name: original_filename,
+      file_content_type:  content_type,
+      file:               path,
+      user_id:            user.id
+    )
+    new_post.save!
+    render json: new_post
   end
 
   def update
@@ -32,8 +48,8 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    @post = Post.find(params[:id])
-    @post.destroy
+    @post.destroy!
+    render json: { data: [] }
   end
 
   private
@@ -54,6 +70,6 @@ class PostsController < ApplicationController
       end
 
       new_params=ActionController::Parameters.new(new_hash)
-      new_params.permit(:caption, :image_url, :original_file_name, :file_name, :file_content_type, :file_updated_at, :user_id)
+      new_params.permit(:caption, :image_url, :original_file_name, :file_name, :file_content_type, :file_updated_at, :file, :user_id)
     end
 end

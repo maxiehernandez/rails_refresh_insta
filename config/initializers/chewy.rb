@@ -1,1 +1,1 @@
-Chewy.settings = {host: 'localhost:9200'} # do not use environments
+# Chewy.settings = {host: 'localhost:9200'} # do not use environments
