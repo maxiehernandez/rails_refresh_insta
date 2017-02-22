@@ -1,28 +1,28 @@
 class CommentsController < ApplicationController
   before_action :set_post, only: [:create, :destroy]
+  before_action :set_comment, only: [:destroy]
 
   def show
-    render json: @comment
+    render json: Comment.find(params[:id].to_i)
   end
 
   def create
     @comment = @post.comments.build(comment_params)
 
     if @comment.save!
-      render :show, status: :created, location: @comment
+      render @comment, status: 200
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors, status: 500
     end
   end
 
   def destroy
-    @comment = @post.comments.find(params[:id])
     @comment.destroy
   end
 
   private
     def set_comment
-      @comment = Comment.find(params[:id])
+      @comment = Comment.find(params[:id].to_i)
     end
 
     def set_post
@@ -30,6 +30,6 @@ class CommentsController < ApplicationController
     end
 
     def comment_params
-      params.require(:comment).permit(:body)
+      params.require(:comment).permit(:body, :user_id)
     end
 end
