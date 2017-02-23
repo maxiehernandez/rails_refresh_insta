@@ -8,7 +8,7 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @post.comments.build(comment_params)
-    @comment.user_id = params[:data][:relationships][:user][:data][:id]
+    @comment.user_id = 1 #params[:data][:relationships][:user][:data][:id]
     if @comment.save!
       render json: @comment, status: 200
     else
@@ -22,7 +22,7 @@ class CommentsController < ApplicationController
 
   private
     def set_comment
-      @comment = Comment.find(params[:id].to_i)
+      @comment = Comment.find(params[:comment].to_i)
     end
 
     def set_post
