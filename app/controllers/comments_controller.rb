@@ -7,7 +7,6 @@ class CommentsController < ApplicationController
   end
 
   def create
-    puts  "comment create method params iiiiiiiiiiiiiii", params.inspect, " oooo"
     @comment = @post.comments.build(comment_params)
     @comment.user_id = params[:data][:relationships][:user][:data][:id]
     if @comment.save!
