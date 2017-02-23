@@ -1,9 +1,26 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
 
+  # def index
+  #   if params[:page]
+  #     @posts = Post.page(params[:page][:number]).per(params[:page][:size])
+  #   else
+  #     @posts = Post.includes(:comments).all
+  #   end
+  #   render json: @posts
+  # end
+
   def index
-    render json: Post.includes(:comments).all
+    info = {
+      page: params[:page] || 1,
+      per_page: params[:per_page] || 10
+    }
+
+    @posts = Post.page(info[:page]).per(info[:per_page])
+
+    render json: @posts, params: info, meta: pagination_dict(@posts)
   end
+
 
   def show
     render json: @post

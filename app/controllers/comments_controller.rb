@@ -17,7 +17,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comment.destroy
+    @comment.destroy!
   end
 
   private
