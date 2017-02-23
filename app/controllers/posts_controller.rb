@@ -35,6 +35,7 @@ class PostsController < ApplicationController
       file:               path,
       user_id:            user.id
     )
+
     new_post.save!
     render json: new_post
   end
@@ -69,6 +70,6 @@ class PostsController < ApplicationController
       end
 
       new_params=ActionController::Parameters.new(new_hash)
-      new_params.permit(:caption, :image_url, :original_file_name, :file_name, :file_content_type, :file_updated_at, :file)
+      new_params.permit(:caption, :image_url, :original_file_name,)
     end
 end

@@ -9,30 +9,17 @@ class Post < ApplicationRecord
     #    file.write(uploaded_io.read)
     #  end
     #  return path
-
-      s3 = Aws::S3::Resource.new
-      bucket = s3.bucket(ENV['AWS_S3_BUCKET'])
-
       file_key = file.original_filename
-      file_obj = bucket.object(file_key)
-      aws_response = file_obj.upload_file(file.tempfile)
+      s3 = Aws::S3::Resource.new()
+      file_obj = s3.bucket(ENV['AWS_S3_BUCKET']).object(file_key)
+      aws_response = file_obj.upload_file(file.tempfile, acl: 'public-read')
 
       if aws_response
-        return file_key
+        return file_obj.public_url
       end
 
    end
 
-  #  def aws_download(file)
-  #    s3 = Aws::S3::Resource.new
-  #    bucket = s3.bucket(ENV['AWS_S3_BUCKET'])
-   #
-  #    file_key = file.original_filename
-   #
-  #    File.open(self.file_name, 'wb') do |file|
-  #      reap = s3.get_object({ bucket:'bucket', key:'file_key' }, target: '/upload')
-  #    end
-  #  end
 
    def self.search(posts, query)
      posts.select { |post|

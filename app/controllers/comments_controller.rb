@@ -9,9 +9,9 @@ class CommentsController < ApplicationController
   def create
     puts  "comment create method params iiiiiiiiiiiiiii", params.inspect, " oooo"
     @comment = @post.comments.build(comment_params)
-
+    @comment.user_id = params[:data][:relationships][:user][:data][:id]
     if @comment.save!
-      render @comment, status: 200
+      render json: @comment, status: 200
     else
       render json: @comment.errors, status: 500
     end
@@ -31,6 +31,6 @@ class CommentsController < ApplicationController
     end
 
     def comment_params
-      params.require(:comment).permit(:body)
+      params.require(:data).require(:attributes).permit(:body)
     end
 end
