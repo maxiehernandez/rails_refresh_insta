@@ -1,9 +1,17 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
 
+
   def index
-    render json: Post.includes(:comments).all
+    if params[:page]
+      @posts = Post.page(params[:page][:number]).per(params[:page][:size])
+    else
+      @posts = Post.includes(:comments).all
+    end
+
+    render json: @posts, meta: pagination_dict(@posts)
   end
+
 
   def show
     render json: @post
@@ -35,6 +43,7 @@ class PostsController < ApplicationController
       file:               path,
       user_id:            user.id
     )
+
     new_post.save!
     render json: new_post
   end
@@ -49,7 +58,6 @@ class PostsController < ApplicationController
 
   def destroy
     @post.destroy!
-    render json: { data: [] }
   end
 
   private
@@ -70,6 +78,6 @@ class PostsController < ApplicationController
       end
 
       new_params=ActionController::Parameters.new(new_hash)
-      new_params.permit(:caption, :image_url, :original_file_name, :file_name, :file_content_type, :file_updated_at, :file, :user_id)
+      new_params.permit(:caption, :image_url, :original_file_name, :file_name, :file_content_type, :file_updated_at, :file)
     end
 end

@@ -3,19 +3,25 @@ class Post < ApplicationRecord
   has_many :comments
 
    def self.uploading(file)
-     uploaded_io = file
-     File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
-       file.write(uploaded_io.read)
-     end
-     path = Rails.root.join('public', 'uploads', uploaded_io.original_filename)
-     return path
+    #  uploaded_io = file
+    #  path = Rails.root.join('public', 'uploads', uploaded_io.original_filename)
+    #  File.open(path, 'wb') do |file|
+    #    file.write(uploaded_io.read)
+    #  end
+    #  return path
+      file_key = file.original_filename
+      s3 = Aws::S3::Resource.new()
+      file_obj = s3.bucket(ENV['AWS_S3_BUCKET']).object(file_key)
+      aws_response = file_obj.upload_file(file.tempfile, acl: 'public-read')
+
+      if aws_response
+        return file_obj.public_url
+      end
+
    end
 
 
    def self.search(posts, query)
-    #  if query == "*"
-    #    return posts
-    #  end
      posts.select { |post|
        if !post.file_name.nil?
          post.caption.downcase.include?(query) || post.file_name.downcase.include?(query)
