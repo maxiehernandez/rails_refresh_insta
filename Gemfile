@@ -14,6 +14,7 @@ gem 'json'
 gem 'rack-cors'
 gem 'aws-sdk', '~> 2'
 gem 'kaminari'
+gem 'sendgrid'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.18'
 # Use Puma as the app server
