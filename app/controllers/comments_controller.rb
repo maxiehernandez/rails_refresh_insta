@@ -1,41 +1,37 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy]
-
-  def index
-    @comments = Comment.all
-  end
+  before_action :set_post, only: [:create]
+  # before_action :set_comment, only: [:destroy]
 
   def show
+    render json: Comment.find(params[:id].to_i)
   end
 
   def create
-    @comment = Comment.new(comment_params)
-
-    if @comment.save
-      render :show, status: :created, location: @comment
+    @comment = @post.comments.build(comment_params)
+    @comment.user_id = 1 #params[:data][:relationships][:user][:data][:id]
+    if @comment.save!
+      CommentNotificationMailer.send_comment_email(@comment).deliver
+      render json: @comment, status: 200
     else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
-  end
-
-  def update
-    if @comment.update(comment_params)
-      render :show, status: :ok, location: @comment
-    else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors, status: 500
     end
   end
 
   def destroy
-    @comment.destroy
+    @comment = Comment.find_by_id(params[:id].to_i)
+    @comment.destroy!
   end
 
   private
-    def set_comment
-      @comment = Comment.find(params[:id])
+    # def set_comment
+    #   @comment = Comment.find(params[:id].to_i)
+    # end
+
+    def set_post
+      @post = Post.find(params[:data][:relationships][:post][:data][:id])
     end
 
     def comment_params
-      params.require(:comment).permit(:body, :post_id, :user_id)
+      params.require(:data).require(:attributes).permit(:body)
     end
 end

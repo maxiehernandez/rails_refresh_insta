@@ -13,6 +13,13 @@ module RailsRefreshInsta
     # -- all .rb files in that directory are automatically loaded.
     config.api_only = true
 
+    config.before_configuration do
+      env_file = File.join(Rails.root, 'config', 'aws.yml')
+      YAML.load(File.open(env_file)).each do |key, value|
+        ENV[key.to_s] = value
+      end if File.exists?(env_file)
+    end
+
     config.middleware.insert_before 0, Rack::Cors, :debug => true, :logger => (-> { Rails.logger }) do
       allow do
         origins 'http://localhost:4200'
