@@ -9,7 +9,7 @@ class PostsController < ApplicationController
       @posts = Post.includes(:comments).all
     end
 
-    sorted = @posts.sort_by(&:created_at).reverse
+    sorted = @posts.order('posts.created_at DESC')
     render json: sorted, meta: pagination_dict(@posts)
   end
 
