@@ -29,7 +29,9 @@ class Post < ApplicationRecord
      }
    end
 
-
+   def sort_comments
+     self.comments.order("created_at DESC")
+   end
 
 
   # elasticsearch indexes

@@ -9,13 +9,14 @@ class PostsController < ApplicationController
       @posts = Post.includes(:comments).all
     end
 
-    sorted = @posts.order('posts.created_at DESC')
-    render json: sorted, meta: pagination_dict(@posts)
+    sorted_post = @posts.order('posts.created_at DESC')
+    render json: sorted_post, meta: pagination_dict(@posts)
   end
 
 
   def show
-    render json: @post
+    # sorted_comments = @post.sort_comments
+    render json: @post #sorted_comments
   end
 
 
