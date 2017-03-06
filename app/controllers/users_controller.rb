@@ -6,6 +6,15 @@ class UsersController < ApplicationController
     # @users = User.all
   end
 
+  def current
+    @user = User.find(1)
+    if @user == !nil
+      render json: @user
+    else
+      render json: @user.errors, status:401
+    end
+  end
+
   def show
     render json: @user
   end
