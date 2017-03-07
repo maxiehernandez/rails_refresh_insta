@@ -8,7 +8,7 @@ class UsersController < ApplicationController
 
   def current
     @user = User.find(1)
-    if @user == !nil
+    if !!@user
       render json: @user
     else
       render json: @user.errors, status:401
