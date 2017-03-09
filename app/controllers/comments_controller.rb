@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
 
   def show
     render json: Comment.find(params[:id].to_i)
+    # render json: @post.comments
   end
 
   def create

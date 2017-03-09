@@ -6,7 +6,7 @@ class PostsController < ApplicationController
     if params[:page]
       @posts = Post.page(params[:page][:number]).per(params[:page][:size])
     else
-      @posts = Post.includes(:comments).all
+      @posts = Post.all.includes(:comments)
     end
 
     sorted_post = @posts.order('posts.created_at DESC')
